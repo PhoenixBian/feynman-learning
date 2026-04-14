@@ -1,89 +1,255 @@
-# Feynman Learning
+# Feynman Learning — 费曼学习引擎
 
-**You haven't learned something until you can't hide behind jargon, hand-waving, or "basically."**
+**如果你不能让一个陌生人听懂你的解释，你就还没学会。**
 
-| Traditional AI Tutor | Feynman Learning |
+大多数 AI 学习工具的循环是：AI 出题 → 你答题 → AI 判卷。你靠记忆和模式匹配就能过关，但你并没有真正理解。
+
+这个工具做的事不一样。**AI 不判卷，AI 做一个难相处的听众**——你说话的时候，它实时追问：用了术语就问"具体什么意思"，跳过细节就问"中间发生了什么"，前后矛盾就直接指出来。没有打分，没有测试，没有诊断报告。你自己决定什么时候学够了。
+
+| 传统 AI 学习工具 | Feynman Learning |
 |---|---|
-| AI generates lesson, quizzes you | AI generates lecture, then **pushes back in real-time** |
-| AI grades against its own answer key | AI catches gaps **while you're talking** |
-| Tests recall: "what did the lecture say?" | Tests understanding: "what do you mean by that, specifically?" |
-| Fixed difficulty ladder | Adaptive: next lecture targets where **you got stuck** |
-| "You got 85% correct" | "You said X was low-risk, then said it can wipe you out. Which is it?" |
+| AI 出题，你答题 | AI 写讲义，你**自己说**，AI 实时追问 |
+| AI 拿答案对照判卷 | AI 在你说话时**抓漏洞** |
+| 测记忆："讲义说了什么？" | 测理解："你说的这个词具体什么意思？" |
+| 固定难度阶梯 | 自适应：下一讲针对你**卡住的地方** |
+| "你答对了 85%" | "你说 X 是低风险，又说可能爆仓，哪个是对的？" |
 
-## How It Works
+---
+
+## 工作原理
 
 ```
-1. Tell AI what you want to learn (+ source material)
-2. AI writes a lecture from primary sources
-3. You talk about it — AI becomes a difficult listener
-4. AI catches jargon, contradictions, hand-waving in real-time
-5. When you want more, AI suggests the next direction
+1. 你告诉 AI 想学什么（+ 提供学习材料）
+2. AI 从你的材料中写一份讲义（引用原文，不是 AI 自己编的）
+3. 你读完后回来聊——AI 变成难相处的听众，实时追问
+4. 你选择深入方式：场景测试 / 实际生产 / 做题
+5. 想继续学就说"下一讲"，AI 根据你卡住的点建议方向
 ```
 
-No test. No score. No grading. AI's job is to be the listener who refuses to let you be vague.
+**没有考试。没有打分。** AI 的角色是压力——在你说话的时候抓住每一个含糊的地方，而不是等你说完了再来评判。
 
-## Install
+---
 
-### Claude Code Plugin
+## 安装
+
+### 方式一：Claude Code Plugin（推荐）
 
 ```bash
-claude plugin marketplace add PhoenixBian/feynman-learning
-claude plugin install feynman-learning@feynman-learning
+claude plugin marketplace add PhoenixBian/biancuihuo-toolkit
+claude plugin install feynman-learning@biancuihuo-toolkit
 ```
 
-### Manual
+或者直接安装：
+
+```bash
+claude plugin install PhoenixBian/feynman-learning
+```
+
+### 方式二：手动安装
 
 ```bash
 git clone https://github.com/PhoenixBian/feynman-learning.git
 cd feynman-learning
 ```
 
-## Quick Start
+---
+
+## 快速开始
 
 ```
 /feynman-learning
 ```
 
-Then:
+然后直接说你想学什么：
 
-- `"Learn game theory from this PDF"` → provide a file path
-- `"Learn transformer architecture"` → AI finds sources
-- `"demo"` → try a pre-built mini-cycle in 5 minutes
-- `"continue"` → resume where you left off
+- `"从这个 PDF 学博弈论"` → 给一个文件路径
+- `"学 Transformer 架构"` → AI 自动搜索一手资料
+- `"从这个链接学"` → 给一个 URL
+- `"demo"` → 5 分钟内体验一个完整的迷你循环
+- `"继续"` → 从上次中断的地方继续
 
-## Why This Works
+### 第一次开一个新课题
 
-Most AI tutoring has a broken loop: AI teaches, then grades you against its own material. You pass by echoing what you just read.
+AI 会问你一个问题：
 
-This system doesn't grade you. It **pushes back while you're talking**. Use a term you can't define? AI asks what you mean. Skip a step? AI stops you. Contradict yourself? AI points it out. The pressure is continuous, not a test at the end.
+> 你想怎么用这个知识？
+> - 纯好奇——搞明白就行
+> - 有东西要做——有实际要产出的东西
+> - 要考试——需要做对题
 
-The learning happens at the moment you realize you can't explain something you thought you understood. That moment — not a score — is what this system is designed to create.
+然后 AI 会给你一个学习目标建议和大致路径，比如：
 
-## Three Modes
+> 目标：理解纳什均衡，能在真实场景中识别出来。
+> 路径：1) 核心概念讲义 → 2) 反直觉的边缘案例 → 3) 真实应用。
+>
+> 从第一讲开始？
 
-When you start a topic, AI asks: "What do you want to do with this?"
+你可以接受、修改、或者跳过。路径会随着你的学习动态调整。
 
-- **Curiosity**: AI gives you edge-case scenarios. "Here's a situation — what do you see?"
-- **Craft**: You produce something real (not practice). AI finds where your output contradicts what you said you understood.
-- **Problem-solving**: You solve problems. AI checks step by step, finds the first wrong step, and asks what you were thinking — without giving the answer.
+---
 
-## File Structure
+## 核心机制：难相处的听众
+
+读完讲义后你回来聊，AI 不是一个耐心的老师——它是一个**拒绝让你含糊带过的听众**：
+
+### 1. 术语追问
+
+你用了一个领域词汇，AI 立刻问"这个词在这里具体什么意思？"一直追到你没有专业词汇可以藏的地方。
+
+> 你："套利就是利用价差赚钱"
+> AI："价差怎么产生的？谁先动？什么时候消失？"
+
+### 2. 矛盾检测
+
+你在不同地方对同一件事说法不一致，AI 直接指出来。
+
+> AI："你刚才说这是低风险操作，现在又说可能被追保证金。这两个能同时成立吗？"
+
+### 3. 跳步拦截
+
+你用"然后就……""基本上就是……"跳过关键细节，AI 停下来。
+
+> AI："等等，你说'然后就赚了'——中间发生了什么？"
+
+### 4. 难度升级
+
+如果你全程很顺没有卡住，AI 不会说"很好你都懂了"——它会问更底层的问题。没有摩擦可能意味着难度不够，不是你已经掌握了。
+
+---
+
+## 三种深入模式
+
+讨论之后，AI 会总结你还没说清楚的 2-3 个点，然后你选择怎么深入：
+
+### 模式 A：场景测试（纯好奇）
+
+目标是理解，不需要产出任何东西。
+
+AI 给你一个**具体的边缘案例**——不是"请解释XX"，而是：
+
+> "这里有个情况：A 市场和 B 市场出现了价差，但流动性很低。你用刚学的理论，看看这里发生了什么？"
+
+你回答后 AI 只问一件事：**"哪里卡了？"**
+
+- 你说出卡的地方 → 深挖那个点
+- 你说"没卡" → AI 换更难的场景
+- 循环，直到你说"够了"或发现一个值得下一讲展开的盲点
+
+### 模式 B：实际生产（手艺训练）
+
+目标是做出一个**真的要用的东西**。
+
+不是"写一个练习用的标题"，而是"写一个你真的要发出去的标题"。练习是安全的，真实产出有后果。有后果才逼你认真。
+
+你做完之后，AI 做两件事：
+
+1. 找你的产出和你说的理论矛盾的地方，反问为什么
+2. 只指出**一个问题**——不是全面评价，就最大的那一个
+
+你改完 → 再来 → AI 指出下一个问题 → 循环。
+
+第一轮 AI **不给答案**。你先按自己的分析改。第二版之后 AI 才给反馈。
+
+### 模式 C：解题训练（考试提分）
+
+目标是做对题。
+
+AI 出题（或你带自己的真题来）。你做，AI **逐步检查**——不只看最终答案，而是找到**你第一个出错的步骤**，然后问："这一步你在想什么？"
+
+AI 不直接给正确答案。它问一个能把你引向错误原因的问题。你修正 → AI 再检查 → 找下一个问题 → 循环。
+
+如果同一类错误卡了 2-3 轮，AI 给一个针对性的迷你讲解——只讲你缺的那一块，不是重新来一遍整个概念。
+
+这个模式也适用于：编程题、证明题、语言练习、任何有"对不对"这个客观标准的练习。
+
+---
+
+## 下一讲
+
+AI 不会自动生成下一讲。**你主动要。**
+
+当你说"下一讲"/"继续深入"/"下一步学什么"：
+
+AI 根据你讨论中卡住的点建议方向：
+
+> 我们讨论时你最大的卡点是 [具体描述]。下一讲建议聚焦 [具体角度]。
+>
+> 或者你想换个方向探索 [另一个方向]？
+>
+> 选哪个？
+
+你选，AI 写下一讲。循环继续。
+
+学习路径不是预设的课程表——它跟着你**真实暴露出来的缺口**走。
+
+---
+
+## 讲义质量
+
+AI 写的讲义遵循一条铁律：**引用一手原文，不编造。**
+
+- 每个论点都附带原文引用（3 句以上），标注出处（作者 + 作品名）
+- AI 的推论明确标注为 `[inference]`
+- 无法验证的说法直接删除
+- 结构：从具体现象入手 → 提取底层规律 → 给出反例或边缘案例
+- 语气像一个真的研究过这些材料的人在跟你聊，不是教科书
+
+---
+
+## 进度追踪
+
+每个课题有一个 `progress.md`，记录：
+
+- 当前状态（在哪个阶段）
+- 已完成的讲义列表
+- 卡住的点（下一讲的种子）
+- 学习模式（好奇 / 手艺 / 解题）
+
+说"继续"就能从上次中断的地方接着来。
+
+---
+
+## 文件结构
 
 ```
 learning-sessions/
   {topic}/
-    progress.md                 ← status & lecture history
-    lectures/L01_{title}.md     ← AI-generated, with source citations
-    discussions/D01.md           ← notable exchanges
+    progress.md                 ← 进度和状态
+    lectures/
+      L01_{title}.md            ← AI 生成的讲义（含原文引用）
+    discussions/
+      D01.md                    ← 讨论中的有价值交流
 settings/
-  learner-profile.md            ← optional: background for better lectures
+  learner-profile.md            ← 可选：你的背景信息，让讲义更贴合你
 ```
 
-## Requirements
+所有文件都在这一个目录里生成，不会往外面写任何东西。
 
-- [Claude Code](https://claude.ai/code)
-- A Claude subscription
+---
 
-## License
+## 为什么这样设计
 
-MIT
+大多数 AI 教学工具的问题是**激励回路坏了**：AI 出材料，然后拿自己出的材料判你的卷。你靠回忆刚读的内容就能过关。这不是学习，这是回声。
+
+这个工具不判卷。它**在你说话的时候施加压力**。用了术语但说不清楚？追问。跳过了关键步骤？拦住。自相矛盾？指出来。压力是持续的，不是最后来一场考试。
+
+学习发生在你发现自己说不清楚一个以为自己懂的东西的那个瞬间。那个瞬间——不是一个分数——才是这个系统要制造的东西。
+
+---
+
+## 语言支持
+
+- 自动匹配你的语言（中文输入就中文回复，英文同理）
+- 支持跨语言教学：材料是中文的，但你想用英文学，可以
+- 专业术语首次出现时标注：`Derivative（导数）`
+
+---
+
+## 环境要求
+
+- [Claude Code](https://claude.ai/code)（CLI、VS Code 插件、桌面客户端都行）
+- Claude 订阅
+
+## 协议
+
+MIT — 随便拿，随便改。
