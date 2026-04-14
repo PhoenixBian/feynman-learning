@@ -1,0 +1,8 @@
+{
+  "name": "feynman-learning",
+  "description": "Feynman-method learning engine. AI writes lectures from primary sources, then becomes a difficult listener — chasing jargon, flagging contradictions, blocking hand-waving in real-time. No test, no score. You decide when you've learned enough.",
+  "version": "1.0.0",
+  "author": {
+    "name": "PhoenixBian"
+  }
+}

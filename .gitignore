@@ -1,0 +1,14 @@
+# User data (don't commit personal learning sessions)
+learning-sessions/*/
+!learning-sessions/README.md
+
+# User profile (contains personal info)
+settings/learner-profile.md
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temp files
+tmp/
+*.tmp
